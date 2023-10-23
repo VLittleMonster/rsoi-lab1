@@ -44,6 +44,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
           source: "app,Dockerfile,docker-compose.yml,requirements.txt"
           target: /home/${{ secrets.SSH_USERNAME }}/person-service
 
@@ -54,6 +55,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          passphrase: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}/person-service
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose down
