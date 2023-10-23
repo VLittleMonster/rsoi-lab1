@@ -11,6 +11,7 @@ from my_exceptions.handlers import (
     request_validation_exception_handler,
 )
 
+
 def custom_openapi():
     if not app.openapi_schema:
         app.openapi_schema = get_openapi(
