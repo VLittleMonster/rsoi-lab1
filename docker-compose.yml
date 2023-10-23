@@ -1,18 +1,40 @@
-version: "3"
+version: '3.1'
+
 services:
-  postgres:
-    image: library/postgres:13
-    container_name: postgres
-    restart: on-failure
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./postgres/:/docker-entrypoint-initdb.d/
+  database:
+    image: postgres:16-alpine
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=person_db
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  
+  app:
+    image: app
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+    depends_on:
+      database:
+        condition: service_healthy
 
 volumes:
-  db-data:
+  db_data:
+    driver: local
+
+networks:
+  default:
